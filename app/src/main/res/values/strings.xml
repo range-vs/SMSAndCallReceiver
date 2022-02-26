@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">SMS/Call Receiver</string>
+    <string name="permission_not_granted">Permission not granted</string>
+    <string name="failure_permission">Failure permission</string>
+    <string name="start_service">Start service</string>
+    <string name="stop_service">Stop service</string>
+    <string name="notification_label">SMS/Call receiver running...</string>
+    <string name="reboot_label">Restart app: repeat start service</string>
+    <string name="chat_id_range"></string>
+    <string name="telegram_bot_id"></string>
+
+</resources>
