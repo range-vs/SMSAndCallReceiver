@@ -91,6 +91,3 @@ public class ReceiversActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }
-
-// TODO залить на гитхаб
-// TODO наладить перезапуск утилиты
