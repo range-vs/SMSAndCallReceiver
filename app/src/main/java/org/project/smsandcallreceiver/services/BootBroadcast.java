@@ -13,6 +13,6 @@ import org.project.smsandcallreceiver.helpers.ServerHelper;
 public class BootBroadcast extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         context.startForegroundService(new Intent(context, BackgroundService.class));
-        ServerHelper.getRequest(ChatIDTelegramHelper.RangeChatID, context.getString(R.string.reboot_label));
+        ServerHelper.getRequest(context.getString(R.string.reboot_label));
     }
 }

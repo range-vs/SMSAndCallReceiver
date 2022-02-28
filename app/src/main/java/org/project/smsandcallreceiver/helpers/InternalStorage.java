@@ -17,18 +17,20 @@ import java.io.InputStreamReader;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class InternalStorage {
+public enum  InternalStorage {
 
-    public static final String fileName = "requests.json";
-    public static final String TAG = ReceiversActivity.class.getSimpleName();
+    INSTANCE;
 
-    public static void saveData(JSONArray json) throws IOException {
+    public final String fileName = "requests.json";
+    public final String TAG = ReceiversActivity.class.getSimpleName();
+
+    public void saveData(JSONArray json) throws IOException {
         FileOutputStream out = App.getInstance().openFileOutput(fileName, MODE_PRIVATE);
         out.write(json.toString().getBytes());
         out.close();
     }
 
-    public static JSONArray readData() throws IOException, JSONException {
+    public JSONArray readData() throws IOException, JSONException {
         JSONArray jsonArray = null;
         FileInputStream in = App.getInstance().openFileInput(fileName);
         BufferedReader br= new BufferedReader(new InputStreamReader(in));

@@ -14,6 +14,8 @@ import org.json.JSONArray;
 import org.project.smsandcallreceiver.helpers.InternalStorage;
 import org.project.smsandcallreceiver.helpers.ServerHelper;
 import org.project.smsandcallreceiver.services.BackgroundService;
+import org.project.smsandcallreceiver.threads.InternetThread;
+import org.project.smsandcallreceiver.threads.SingletonThreadStopper;
 
 import java.io.IOException;
 
@@ -24,24 +26,32 @@ public class ReceiversActivity extends AppCompatActivity {
 
     private static final String TAG = ReceiversActivity.class.getSimpleName();
     public static ReceiversActivity instance = null;
+    private InternetThread internetThread = null;
 
     public void onCreate(Bundle savedInstanceState) {
         instance = this;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ServerHelper.init(getString(R.string.chat_id_range));
+        ServerHelper.init();
         checkForSmsPermission();
         Button btnStart = findViewById(R.id.btnStartService);
         btnStart.setOnClickListener(view -> {
+            SingletonThreadStopper singleton = SingletonThreadStopper.INSTANCE;
+            singleton.setStatusRun(true);
+            internetThread = new InternetThread("thread_internet_connection");
+            internetThread.start();
             startForegroundService(new Intent(this, BackgroundService.class));
         });
         Button btnStop = findViewById(R.id.btnStopService);
         btnStop.setOnClickListener(view -> {
+            SingletonThreadStopper singleton = SingletonThreadStopper.INSTANCE;
+            singleton.setStatusRun(false);
             stopService(new Intent(this, BackgroundService.class));
         });
         try {
-            InternalStorage.saveData(new JSONArray());
+            InternalStorage singleton = InternalStorage.INSTANCE;
+            singleton.saveData(new JSONArray());
         } catch (IOException e) {
             Log.e(TAG, e.toString());
         }

