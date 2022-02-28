@@ -10,7 +10,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import org.json.JSONArray;
+import org.project.smsandcallreceiver.helpers.InternalStorage;
+import org.project.smsandcallreceiver.helpers.ServerHelper;
 import org.project.smsandcallreceiver.services.BackgroundService;
+
+import java.io.IOException;
 
 public class ReceiversActivity extends AppCompatActivity {
     private static final int APPS_PERMISSIONS_CALL = 10001;
@@ -24,15 +29,22 @@ public class ReceiversActivity extends AppCompatActivity {
         instance = this;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ServerHelper.init(getString(R.string.chat_id_range));
         checkForSmsPermission();
         Button btnStart = findViewById(R.id.btnStartService);
-        btnStart.setOnClickListener((View.OnClickListener) view -> {
+        btnStart.setOnClickListener(view -> {
             startForegroundService(new Intent(this, BackgroundService.class));
         });
         Button btnStop = findViewById(R.id.btnStopService);
-        btnStop.setOnClickListener((View.OnClickListener) view -> {
+        btnStop.setOnClickListener(view -> {
             stopService(new Intent(this, BackgroundService.class));
         });
+        try {
+            InternalStorage.saveData(new JSONArray());
+        } catch (IOException e) {
+            Log.e(TAG, e.toString());
+        }
     }
 
     private void checkForSmsPermission() {
