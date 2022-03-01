@@ -23,6 +23,8 @@ public abstract class PhonecallReceiver extends BroadcastReceiver {
     private static int lastState = 0;
     private static String savedNumber;
 
+    private Object object = new Object();
+
     public abstract void onIncomingCallAnswered(Context context, String str, Date date, String operator, String target_number);
 
     public abstract void onIncomingCallEnded(Context context, String str, Date date, Date date2, String operator, String target_number);
@@ -36,23 +38,25 @@ public abstract class PhonecallReceiver extends BroadcastReceiver {
     public abstract void onOutgoingCallStarted(Context context, String str, Date date, String operator, String target_number);
 
     public void _onReceive(Context context, Intent intent) {
-        SIMData simData = TelephonyLogs.getCallsLog(context);
+        synchronized (object) {
+            SIMData simData = TelephonyLogs.getCallsLog(context);
 
-        if (intent.getAction().equals("android.intent.action.NEW_OUTGOING_CALL")) {
-            savedNumber = intent.getExtras().getString("android.intent.extra.PHONE_NUMBER");
-            return;
+            if (intent.getAction().equals("android.intent.action.NEW_OUTGOING_CALL")) {
+                savedNumber = intent.getExtras().getString("android.intent.extra.PHONE_NUMBER");
+                return;
+            }
+            String stateStr = intent.getExtras().getString("state");
+            String number = intent.getExtras().getString("incoming_number");
+            int state = 0;
+            if (stateStr.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
+                state = 0;
+            } else if (stateStr.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
+                state = 2;
+            } else if (stateStr.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
+                state = 1;
+            }
+            onCallStateChanged(context, state, number, simData.getOperator(), simData.getNumber());
         }
-        String stateStr = intent.getExtras().getString("state");
-        String number = intent.getExtras().getString("incoming_number");
-        int state = 0;
-        if (stateStr.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
-            state = 0;
-        } else if (stateStr.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
-            state = 2;
-        } else if (stateStr.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
-            state = 1;
-        }
-        onCallStateChanged(context, state, number, simData.getOperator(), simData.getNumber());
     }
 
     public void onReceive(Context context, Intent intent) {
