@@ -23,6 +23,8 @@ public class ReceiversActivity extends AppCompatActivity {
     private static final int APPS_PERMISSIONS_CALL = 10001;
     private static final int APPS_PERMISSIONS_CALL_NUMBER = 10002;
     private static final int APPS_PERMISSIONS_SMS = 10000;
+    private static final int APPS_PERMISSIONS_READ_PHONE_NUMBERS = 10003;
+    private static final int APPS_PERMISSIONS_READ_SMS = 10004;
 
     private static final String TAG = ReceiversActivity.class.getSimpleName();
     public static ReceiversActivity instance = null;
@@ -82,6 +84,20 @@ public class ReceiversActivity extends AppCompatActivity {
         }
     }
 
+    private void checkForCallReadPermission() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_NUMBERS) != 0) {
+            Log.d(TAG, getString(R.string.permission_not_granted));
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_NUMBERS}, APPS_PERMISSIONS_READ_PHONE_NUMBERS);
+        }
+    }
+
+    private void checkForSmsReadPermission() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) != 0) {
+            Log.d(TAG, getString(R.string.permission_not_granted));
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_SMS}, APPS_PERMISSIONS_READ_SMS);
+        }
+    }
+
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
             case APPS_PERMISSIONS_SMS: {
@@ -103,7 +119,25 @@ public class ReceiversActivity extends AppCompatActivity {
                 break;
             }
             case APPS_PERMISSIONS_CALL: {
-                if (!permissions[0].equalsIgnoreCase(Manifest.permission.READ_PHONE_STATE) || grantResults[0] != 0) {
+                if (permissions[0].equalsIgnoreCase(Manifest.permission.READ_PHONE_STATE) && grantResults[0] == 0) {
+                    checkForCallReadPermission();
+                } else {
+                    Log.d(TAG, getString(R.string.failure_permission));
+                    Toast.makeText(this, getString(R.string.failure_permission), Toast.LENGTH_SHORT).show();
+                }
+                break;
+            }
+            case APPS_PERMISSIONS_READ_PHONE_NUMBERS: {
+                if (permissions[0].equalsIgnoreCase(Manifest.permission.READ_PHONE_NUMBERS) && grantResults[0] == 0) {
+                    checkForSmsReadPermission();
+                } else {
+                    Log.d(TAG, getString(R.string.failure_permission));
+                    Toast.makeText(this, getString(R.string.failure_permission), Toast.LENGTH_SHORT).show();
+                }
+                break;
+            }
+            case APPS_PERMISSIONS_READ_SMS:{
+                if (!permissions[0].equalsIgnoreCase(Manifest.permission.READ_SMS) || grantResults[0] != 0) {
                     Log.d(TAG, getString(R.string.failure_permission));
                     Toast.makeText(this, getString(R.string.failure_permission), Toast.LENGTH_SHORT).show();
                 }
@@ -113,3 +147,7 @@ public class ReceiversActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }
+
+// TODO возможны коллизии при одновременной записи в файл
+// TODO возможны коллизии при одновременно обработке и отлове смс и звонков в другом потоке
+

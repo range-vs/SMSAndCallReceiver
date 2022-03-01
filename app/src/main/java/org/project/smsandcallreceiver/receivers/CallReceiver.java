@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import org.project.smsandcallreceiver.App;
+import org.project.smsandcallreceiver.ReceiversActivity;
 import org.project.smsandcallreceiver.helpers.ChatIDTelegramHelper;
 import org.project.smsandcallreceiver.helpers.ServerHelper;
 
@@ -15,27 +16,33 @@ import java.util.Date;
 public class CallReceiver extends PhonecallReceiver {
     private static final String TAG = CallReceiver.class.getSimpleName();
 
-    public void onIncomingCallReceived(Context ctx, String number, Date start) {
+    public void onIncomingCallReceived(Context ctx, String number, Date start, String operator, String target_number) {
         StringBuilder strMessage = new StringBuilder();
-        strMessage.append("[" + new Date() + "]").append("Incoming call from ").append(number).append("\n");
+        strMessage.append("[" + new Date() + "]").append("Current SIM: ").append(operator).append(". ")
+                .append("Target number: ").append(target_number).append(". ").append("Incoming call from ").append(number).append("\n");
         Log.d(TAG, "onReceiveIncomingCall: " + strMessage);
-        Toast.makeText(App.getInstance(), strMessage.toString(), Toast.LENGTH_LONG).show();
+        ReceiversActivity.instance.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(App.getInstance(), strMessage.toString(), Toast.LENGTH_LONG).show();
+            }
+        });
         ServerHelper.getRequest(strMessage.toString());
     }
 
-    public void onIncomingCallAnswered(Context ctx, String number, Date start) {
+    public void onIncomingCallAnswered(Context ctx, String number, Date start, String operator, String target_number) {
     }
 
-    public void onIncomingCallEnded(Context ctx, String number, Date start, Date end) {
+    public void onIncomingCallEnded(Context ctx, String number, Date start, Date end, String operator, String target_number) {
     }
 
-    public void onOutgoingCallStarted(Context ctx, String number, Date start) {
+    public void onOutgoingCallStarted(Context ctx, String number, Date start, String operator, String target_number) {
     }
 
-    public void onOutgoingCallEnded(Context ctx, String number, Date start, Date end) {
+    public void onOutgoingCallEnded(Context ctx, String number, Date start, Date end, String operator, String target_number) {
     }
 
-    public void onMissedCall(Context ctx, String number, Date start) {
+    public void onMissedCall(Context ctx, String number, Date start, String operator, String target_number) {
     }
 
     public static void enableBroadcastReceiver() {

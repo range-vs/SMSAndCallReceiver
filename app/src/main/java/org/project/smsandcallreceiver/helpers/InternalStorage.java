@@ -24,23 +24,29 @@ public enum  InternalStorage {
     public final String fileName = "requests.json";
     public final String TAG = ReceiversActivity.class.getSimpleName();
 
+    private Object object = new Object();
+
     public void saveData(JSONArray json) throws IOException {
-        FileOutputStream out = App.getInstance().openFileOutput(fileName, MODE_PRIVATE);
-        out.write(json.toString().getBytes());
-        out.close();
+        synchronized (object) {
+            FileOutputStream out = App.getInstance().openFileOutput(fileName, MODE_PRIVATE);
+            out.write(json.toString().getBytes());
+            out.close();
+        }
     }
 
     public JSONArray readData() throws IOException, JSONException {
-        JSONArray jsonArray = null;
-        FileInputStream in = App.getInstance().openFileInput(fileName);
-        BufferedReader br= new BufferedReader(new InputStreamReader(in));
-        StringBuilder sb = new StringBuilder();
-        String s = null;
-        while((s= br.readLine())!= null)  {
-            sb.append(s);
+        synchronized (object) {
+            JSONArray jsonArray = null;
+            FileInputStream in = App.getInstance().openFileInput(fileName);
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            StringBuilder sb = new StringBuilder();
+            String s = null;
+            while ((s = br.readLine()) != null) {
+                sb.append(s);
+            }
+            jsonArray = new JSONArray(sb.toString());
+            return jsonArray;
         }
-        jsonArray = new JSONArray(sb.toString());
-        return jsonArray;
     }
 
 }
