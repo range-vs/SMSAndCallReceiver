@@ -3,19 +3,12 @@ package org.project.smsandcallreceiver.receivers;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.provider.CallLog;
-import android.telephony.SubscriptionInfo;
-import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 
-import org.project.smsandcallreceiver.App;
-import org.project.smsandcallreceiver.helpers.telephone.DualSim;
-import org.project.smsandcallreceiver.helpers.telephone.SIMData;
-import org.project.smsandcallreceiver.helpers.telephone.TelephonyLogs;
+import org.project.smsandcallreceiver.helpers.telephony.SIMData;
+import org.project.smsandcallreceiver.helpers.telephony.TelephonyLogs;
 
 import java.util.Date;
-import java.util.List;
 
 public abstract class PhonecallReceiver extends BroadcastReceiver {
     private static Date callStartTime;

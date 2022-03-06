@@ -29,7 +29,7 @@ public class InternetThread extends Thread {
                 if(isOnline()) {
                     ServerHelper.getRequestSavedData();
                 }
-                Thread.sleep(500);
+                Thread.sleep(300000); // ждем 5 минут
             }
             catch(InterruptedException e){
                 System.out.println("Thread has been interrupted");

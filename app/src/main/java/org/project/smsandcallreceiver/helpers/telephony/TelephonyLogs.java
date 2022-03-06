@@ -1,12 +1,10 @@
-package org.project.smsandcallreceiver.helpers.telephone;
+package org.project.smsandcallreceiver.helpers.telephony;
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.provider.CallLog;
 import android.provider.Telephony;
 import android.telephony.SubscriptionInfo;
-import android.telephony.SubscriptionManager;
 
 import org.project.smsandcallreceiver.App;
 

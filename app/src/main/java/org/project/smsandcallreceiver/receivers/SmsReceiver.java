@@ -14,8 +14,8 @@ import android.widget.Toast;
 import org.project.smsandcallreceiver.App;
 import org.project.smsandcallreceiver.ReceiversActivity;
 import org.project.smsandcallreceiver.helpers.ServerHelper;
-import org.project.smsandcallreceiver.helpers.telephone.SIMData;
-import org.project.smsandcallreceiver.helpers.telephone.TelephonyLogs;
+import org.project.smsandcallreceiver.helpers.telephony.SIMData;
+import org.project.smsandcallreceiver.helpers.telephony.TelephonyLogs;
 
 import java.util.Date;
 

@@ -1,4 +1,4 @@
-package org.project.smsandcallreceiver.helpers.telephone;
+package org.project.smsandcallreceiver.helpers.telephony;
 
 public class SIMData {
 
