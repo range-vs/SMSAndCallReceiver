@@ -12,6 +12,7 @@ import androidx.core.app.ActivityCompat;
 
 import org.json.JSONArray;
 import org.project.smsandcallreceiver.helpers.InternalStorage;
+import org.project.smsandcallreceiver.helpers.Logger;
 import org.project.smsandcallreceiver.helpers.ServerHelper;
 import org.project.smsandcallreceiver.services.BackgroundService;
 import org.project.smsandcallreceiver.threads.InternetThread;
@@ -25,6 +26,8 @@ public class ReceiversActivity extends AppCompatActivity {
     private static final int APPS_PERMISSIONS_SMS = 10000;
     private static final int APPS_PERMISSIONS_READ_PHONE_NUMBERS = 10003;
     private static final int APPS_PERMISSIONS_READ_SMS = 10004;
+    private static final int APPS_PERMISSIONS_READ_FILE = 10005;
+    private static final int APPS_PERMISSIONS_WRITE_FILE = 10006;
 
     private static final String TAG = ReceiversActivity.class.getSimpleName();
     public static ReceiversActivity instance = null;
@@ -39,8 +42,9 @@ public class ReceiversActivity extends AppCompatActivity {
         checkForSmsPermission();
         Button btnStart = findViewById(R.id.btnStartService);
         btnStart.setOnClickListener(view -> {
+            Logger.remove();
             SingletonThreadStopper singleton = SingletonThreadStopper.INSTANCE;
-            singleton.setStatusRun(true);
+            singleton.setRunInternetThread(true);
             internetThread = new InternetThread("thread_internet_connection");
             internetThread.start();
             startForegroundService(new Intent(this, BackgroundService.class));
@@ -48,7 +52,7 @@ public class ReceiversActivity extends AppCompatActivity {
         Button btnStop = findViewById(R.id.btnStopService);
         btnStop.setOnClickListener(view -> {
             SingletonThreadStopper singleton = SingletonThreadStopper.INSTANCE;
-            singleton.setStatusRun(false);
+            singleton.setRunInternetThread(false);
             stopService(new Intent(this, BackgroundService.class));
         });
         try {
@@ -98,6 +102,20 @@ public class ReceiversActivity extends AppCompatActivity {
         }
     }
 
+    private void checkForFileReadPermission() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != 0) {
+            Log.d(TAG, getString(R.string.permission_not_granted));
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, APPS_PERMISSIONS_READ_FILE);
+        }
+    }
+
+    private void checkForFileWritePermission() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != 0) {
+            Log.d(TAG, getString(R.string.permission_not_granted));
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, APPS_PERMISSIONS_WRITE_FILE);
+        }
+    }
+
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
             case APPS_PERMISSIONS_SMS: {
@@ -136,8 +154,26 @@ public class ReceiversActivity extends AppCompatActivity {
                 }
                 break;
             }
-            case APPS_PERMISSIONS_READ_SMS:{
-                if (!permissions[0].equalsIgnoreCase(Manifest.permission.READ_SMS) || grantResults[0] != 0) {
+            case APPS_PERMISSIONS_READ_SMS: {
+                if (permissions[0].equalsIgnoreCase(Manifest.permission.READ_SMS) && grantResults[0] == 0) {
+                    checkForFileReadPermission();
+                } else {
+                    Log.d(TAG, getString(R.string.failure_permission));
+                    Toast.makeText(this, getString(R.string.failure_permission), Toast.LENGTH_SHORT).show();
+                }
+                break;
+            }
+            case APPS_PERMISSIONS_READ_FILE: {
+                if (permissions[0].equalsIgnoreCase(Manifest.permission.READ_EXTERNAL_STORAGE) && grantResults[0] == 0) {
+                    checkForFileWritePermission();
+                } else {
+                    Log.d(TAG, getString(R.string.failure_permission));
+                    Toast.makeText(this, getString(R.string.failure_permission), Toast.LENGTH_SHORT).show();
+                }
+                break;
+            }
+            case APPS_PERMISSIONS_WRITE_FILE:{
+                if (!permissions[0].equalsIgnoreCase(Manifest.permission.WRITE_EXTERNAL_STORAGE) || grantResults[0] != 0) {
                     Log.d(TAG, getString(R.string.failure_permission));
                     Toast.makeText(this, getString(R.string.failure_permission), Toast.LENGTH_SHORT).show();
                 }

@@ -1,11 +1,5 @@
 package org.project.smsandcallreceiver.threads;
 
-import android.util.Log;
-
-import com.android.volley.Request;
-import com.android.volley.toolbox.StringRequest;
-
-import org.json.JSONArray;
 import org.project.smsandcallreceiver.helpers.ServerHelper;
 
 import java.io.IOException;
@@ -22,7 +16,7 @@ public class InternetThread extends Thread {
 
         while (true) {
             SingletonThreadStopper singleton = SingletonThreadStopper.INSTANCE;
-            if(!singleton.isRun()){
+            if(!singleton.isRunInternetThread()){
                 return;
             }
             try {

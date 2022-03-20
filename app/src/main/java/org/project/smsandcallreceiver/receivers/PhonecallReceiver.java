@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.telephony.TelephonyManager;
 
+import org.project.smsandcallreceiver.helpers.Logger;
 import org.project.smsandcallreceiver.helpers.telephony.SIMData;
 import org.project.smsandcallreceiver.helpers.telephony.TelephonyLogs;
 
@@ -32,32 +33,34 @@ public abstract class PhonecallReceiver extends BroadcastReceiver {
 
     public void _onReceive(Context context, Intent intent) {
         synchronized (object) {
-            SIMData simData = TelephonyLogs.getCallsLog(context);
-
-            if (intent.getAction().equals("android.intent.action.NEW_OUTGOING_CALL")) {
-                savedNumber = intent.getExtras().getString("android.intent.extra.PHONE_NUMBER");
-                return;
-            }
-            String stateStr = intent.getExtras().getString("state");
-            String number = intent.getExtras().getString("incoming_number");
-            int state = 0;
-            if (stateStr.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
-                state = 0;
-            } else if (stateStr.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
-                state = 2;
-            } else if (stateStr.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
-                state = 1;
-            }
-            onCallStateChanged(context, state, number, simData.getOperator(), simData.getNumber());
+//            SIMData simData = TelephonyLogs.getCallsLog(context);
+//
+//            if (intent.getAction().equals("android.intent.action.NEW_OUTGOING_CALL")) {
+//                savedNumber = intent.getExtras().getString("android.intent.extra.PHONE_NUMBER");
+//                return;
+//            }
+//            String stateStr = intent.getExtras().getString("state");
+//            String number = intent.getExtras().getString("incoming_number");
+//            int state = 0;
+//            if (stateStr.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
+//                state = 0;
+//            } else if (stateStr.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
+//                state = 2;
+//            } else if (stateStr.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
+//                state = 1;
+//            }
+//            onCallStateChanged(context, state, number, simData.getOperatorSimName(), simData.getNumber());
         }
     }
 
+    @Override
     public void onReceive(Context context, Intent intent) {
         Runnable r = ()->{
             try{
                 Thread.sleep(10000);
             }
             catch(InterruptedException e){
+                Logger.writeLog("threadHookCalls _onReceive has been interrupted");
                 System.out.println("threadHookCalls _onReceive has been interrupted");
             }
             _onReceive(context, intent);

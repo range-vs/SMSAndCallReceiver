@@ -2,31 +2,51 @@ package org.project.smsandcallreceiver.helpers.telephony;
 
 public class SIMData {
 
-    private String phone;
-    private String operator;
+    private String currentSimPhoneNumber;
+    private String operatorSimName;
+    private String incomingPhoneNumber;
+    private String smdMessage;
 
     public SIMData() {
-        phone = operator = null;
+        currentSimPhoneNumber = operatorSimName = incomingPhoneNumber = smdMessage = null;
     }
 
-    public SIMData(String phone, String operator) {
-        this.phone = phone;
-        this.operator = operator;
+    public SIMData(String currentSimPhoneNumber, String operatorSimName, String incomingPhoneNumber, String smdMessage) {
+        this.currentSimPhoneNumber = currentSimPhoneNumber;
+        this.operatorSimName = operatorSimName;
+        this.incomingPhoneNumber = incomingPhoneNumber;
+        this.smdMessage = smdMessage;
     }
 
-    public String getNumber() {
-        return phone;
+    public String getCurrentSimPhoneNumber() {
+        return currentSimPhoneNumber;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setCurrentSimPhoneNumber(String currentSimPhoneNumber) {
+        this.currentSimPhoneNumber = currentSimPhoneNumber;
     }
 
-    public String getOperator() {
-        return operator;
+    public String getOperatorSimName() {
+        return operatorSimName;
     }
 
-    public void setOperator(String operator) {
-        this.operator = operator;
+    public void setOperatorSimName(String operatorSimName) {
+        this.operatorSimName = operatorSimName;
+    }
+
+    public String getIncomingPhoneNumber() {
+        return incomingPhoneNumber;
+    }
+
+    public void setIncomingPhoneNumber(String incomingPhoneNumber) {
+        this.incomingPhoneNumber = incomingPhoneNumber;
+    }
+
+    public String getSmdMessage() {
+        return smdMessage;
+    }
+
+    public void setSmdMessage(String smdMessage) {
+        this.smdMessage = smdMessage;
     }
 }

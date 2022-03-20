@@ -4,14 +4,22 @@ public enum SingletonThreadStopper {
 
     INSTANCE;
 
-    private boolean isRun = true;
+    private boolean isRunInternetThread = true;
+    private boolean isRunCallAndSmsReceiversThread = true;
 
-    public void setStatusRun(boolean sr){
-        isRun = sr;
+    public boolean isRunInternetThread() {
+        return isRunInternetThread;
     }
 
-    public boolean isRun(){
-        return isRun;
+    public void setRunInternetThread(boolean runInternetThread) {
+        isRunInternetThread = runInternetThread;
     }
 
+    public boolean isRunCallAndSmsReceiversThread() {
+        return isRunCallAndSmsReceiversThread;
+    }
+
+    public void setRunCallAndSmsReceiversThread(boolean runCallAndSmsReceiversThread) {
+        isRunCallAndSmsReceiversThread = runCallAndSmsReceiversThread;
+    }
 }

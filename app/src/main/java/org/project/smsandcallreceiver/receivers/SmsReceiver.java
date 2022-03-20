@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import org.project.smsandcallreceiver.App;
 import org.project.smsandcallreceiver.ReceiversActivity;
+import org.project.smsandcallreceiver.helpers.Logger;
 import org.project.smsandcallreceiver.helpers.ServerHelper;
 import org.project.smsandcallreceiver.helpers.telephony.SIMData;
 import org.project.smsandcallreceiver.helpers.telephony.TelephonyLogs;
@@ -28,41 +29,51 @@ public class SmsReceiver extends BroadcastReceiver {
     public void _onReceive(Context context, Intent intent) {
         synchronized (object) {
 
-            Bundle bundle = intent.getExtras();
-            SIMData simData = TelephonyLogs.getCallsLog(context);
-
-            StringBuilder strMessage = new StringBuilder();
-            String format = bundle.getString("format");
-            Object[] pdus = (Object[]) bundle.get(pdu_type);
-            if (pdus != null) {
-                boolean isVersionM = Build.VERSION.SDK_INT >= 23;
-                SmsMessage[] msgs = new SmsMessage[pdus.length];
-                for (int i = 0; i < msgs.length; i++) {
-                    if (isVersionM) {
-                        msgs[i] = SmsMessage.createFromPdu((byte[]) pdus[i], format);
-                    } else {
-                        msgs[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
-                    }
-                    if (i == 0) {
-                        strMessage.append("[" + new Date() + "]").append("Current SIM: ").append(simData.getOperator()).append(". ")
-                                .append("Target number: ").append(simData.getNumber()).append(". ").append("SMS from ").append(msgs[i].getOriginatingAddress()).append(": ");
-                    }
-                    strMessage.append(msgs[i].getMessageBody());
-                }
-                strMessage.append("\n");
-                Log.d(TAG, "onReceiveSMS: " + strMessage);
-                ReceiversActivity.instance.runOnUiThread(() -> Toast.makeText(App.getInstance(), strMessage.toString(), Toast.LENGTH_LONG).show());
-                ServerHelper.getRequest(strMessage.toString());
-            }
+//            Bundle bundle = intent.getExtras();
+//            SIMData simData = TelephonyLogs.getSMSLog(context);
+//
+//            StringBuilder strMessage = new StringBuilder();
+//            String format = bundle.getString("format");
+//            Object[] pdus = (Object[]) bundle.get(pdu_type);
+//            if (pdus != null) {
+//                boolean isVersionM = Build.VERSION.SDK_INT >= 23;
+//                SmsMessage[] msgs = new SmsMessage[pdus.length];
+//                for (int i = 0; i < msgs.length; i++) {
+//                    if (isVersionM) {
+//                        msgs[i] = SmsMessage.createFromPdu((byte[]) pdus[i], format);
+//                    } else {
+//                        msgs[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
+//                    }
+//                    if (i == 0) {
+//                        strMessage.append("[" + new Date() + "]").append("Current SIM: ").append(simData.getOperatorSimName()).append(". ")
+//                                .append("Target number: ").append(simData.getNumber()).append(". ").append("SMS from ").append(msgs[i].getOriginatingAddress()).append(": ");
+//                    }
+//                    strMessage.append(msgs[i].getMessageBody());
+//                }
+//                strMessage.append("\n");
+//                strMessage = new StringBuilder(Logger.generateMsg(strMessage.toString()));
+//                Log.d(TAG, strMessage.toString());
+//                Logger.writeLog(strMessage.toString());
+//                StringBuilder finalStrMessage = strMessage;
+//                ReceiversActivity.instance.runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Toast.makeText(App.getInstance(), finalStrMessage.toString(), Toast.LENGTH_LONG).show();
+//                    }
+//                });
+//                ServerHelper.getRequest(strMessage.toString());
+//            }
         }
     }
 
+    @Override
     public void onReceive(Context context, Intent intent) {
         Runnable r = ()->{
             try{
                 Thread.sleep(10000);
             }
             catch(InterruptedException e){
+                Logger.writeLog("threadHookSMS _onReceive has been interrupted");
                 System.out.println("threadHookSMS _onReceive has been interrupted");
             }
             _onReceive(context, intent);
