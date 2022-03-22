@@ -29,6 +29,7 @@ public class TelephonyLogs {
         };
         int slot = -1;
         Cursor managedCursor =  App.getInstance().getContentResolver().query(CallLog.Calls.CONTENT_URI, projection, null, null, CallLog.Calls.DATE + " DESC limit " + countRecords + ";");
+        managedCursor.moveToFirst();
         while (!managedCursor.isLast()) {
             String type = managedCursor.getString(0); // type
             String target = managedCursor.getString(1); // sim
@@ -69,6 +70,7 @@ public class TelephonyLogs {
         };
         int slot = -1;
         Cursor managedCursor = App.getInstance().getContentResolver().query(Telephony.Sms.CONTENT_URI, projection, null, null, Telephony.Sms.DATE + " DESC limit " + countRecords + ";");
+        managedCursor.moveToFirst();
         while (!managedCursor.isLast()) {
             String type = managedCursor.getString(0); // type
             String target = managedCursor.getString(1); // sim

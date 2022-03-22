@@ -12,6 +12,10 @@ import org.project.smsandcallreceiver.helpers.telephony.TelephonyLogs;
 import org.project.smsandcallreceiver.receivers.CallReceiver;
 import org.project.smsandcallreceiver.threads.SingletonThreadStopper;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -63,14 +67,15 @@ public class SmsAndCallThread extends Thread {
         Optional<String> firstElementOld = callLogsOld.keySet().stream().findFirst();
         int i = 0;
         for(Map.Entry<String, SIMData> elemNew: callLogsNew.entrySet()){
-            if(firstElementOld.equals(elemNew.getKey())){
+            if(firstElementOld.get().equals(elemNew.getKey())){
                 if(i == 0){
                     return false;
                 }
                 break;
             }
+            String callDay = new SimpleDateFormat("yyyy MM dd HH:mm:ss").format(new Date(Long.parseLong(elemNew.getKey())));
             StringBuilder strMessage = new StringBuilder();
-            strMessage.append("[" + elemNew.getKey() + "]").append("Current SIM: ").append(elemNew.getValue().getOperatorSimName()).append(". ")
+            strMessage.append("[" + callDay + "]").append("Current SIM: ").append(elemNew.getValue().getOperatorSimName()).append(". ")
                     .append("Target number: ").append(elemNew.getValue().getCurrentSimPhoneNumber()).append(". ")
                     .append("Incoming call ended from ").append(elemNew.getValue().getIncomingPhoneNumber()).append("\n");
             strMessage = new StringBuilder(Logger.generateMsg(strMessage.toString()));
@@ -93,14 +98,15 @@ public class SmsAndCallThread extends Thread {
         Optional<String> firstElementOld = smsLogsOld.keySet().stream().findFirst();
         int i = 0;
         for(Map.Entry<String, SIMData> elemNew: smsLogsNew.entrySet()){
-            if(firstElementOld.equals(elemNew.getKey())){
+            if(firstElementOld.get().equals(elemNew.getKey())){
                 if(i == 0){
                     return false;
                 }
                 break;
             }
+            String callDay = new SimpleDateFormat("yyyy MM dd HH:mm:ss").format(new Date(Long.parseLong(elemNew.getKey())));
             StringBuilder strMessage = new StringBuilder();
-            strMessage.append("[" + elemNew.getKey() + "]").append("Current SIM: ").append(elemNew.getValue().getOperatorSimName()).append(". ")
+            strMessage.append("[" +  callDay + "]").append("Current SIM: ").append(elemNew.getValue().getOperatorSimName()).append(". ")
                     .append("Target number: ").append(elemNew.getValue().getCurrentSimPhoneNumber()).append(". ")
                     .append("Incoming SMS from ").append(elemNew.getValue().getIncomingPhoneNumber()).append(". ")
                     .append("Message: ").append(elemNew.getValue().getSmdMessage()).
