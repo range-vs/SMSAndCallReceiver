@@ -12,6 +12,7 @@ import org.project.smsandcallreceiver.helpers.telephony.TelephonyLogs;
 import java.util.Date;
 
 public abstract class PhonecallReceiver extends BroadcastReceiver {
+
     private static Date callStartTime;
     private static boolean isIncoming;
     private static int lastState = 0;

@@ -55,16 +55,18 @@ public class ServerHelper {
     public static void getRequest(String text) {
         InternalStorage singleton = InternalStorage.INSTANCE;
 
+        text = text.replace("+", "%2b");
         String url = endPoint + "chat_id=" + ChatIDTelegramHelper.RangeChatID + "&text=" + text;
         RequestQueue queue = Volley.newRequestQueue(App.getInstance());
 
+        String finalText = text;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, response -> {
             Log.e("ServerHelper", "REQUEST OK");
         }, error -> {
             Log.e("ServerHelper", "REQUEST ERROR");
             try {
                 JSONArray json = singleton.readData();
-                json.put(text);
+                json.put(finalText);
                 singleton.saveData(json);
             }catch (Exception e){
                 Log.d(singleton.TAG, "Requests saved error", e);

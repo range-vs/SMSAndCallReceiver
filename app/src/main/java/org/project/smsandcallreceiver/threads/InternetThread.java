@@ -1,5 +1,7 @@
 package org.project.smsandcallreceiver.threads;
 
+import android.util.Log;
+
 import org.project.smsandcallreceiver.helpers.ServerHelper;
 
 import java.io.IOException;
@@ -7,6 +9,8 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 
 public class InternetThread extends Thread {
+
+    private static final String TAG = InternetThread.class.getSimpleName();
 
     public InternetThread(String name){
         super(name);
@@ -26,7 +30,8 @@ public class InternetThread extends Thread {
                 Thread.sleep(300000); // ждем 5 минут
             }
             catch(InterruptedException e){
-                System.out.println("Thread has been interrupted");
+                //System.out.println("Thread has been interrupted");
+                Log.e(TAG, e.toString());
             }
         }
     }

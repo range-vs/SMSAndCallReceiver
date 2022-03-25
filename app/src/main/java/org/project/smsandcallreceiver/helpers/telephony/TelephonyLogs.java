@@ -17,7 +17,7 @@ public class TelephonyLogs {
     private static final int countRecords = 50; // количество крайних записей для забора из журнала
 
     public static LinkedHashMap<String, SIMData> getCallsLog(Context context){
-        LinkedHashMap <String, SIMData> data = new LinkedHashMap <String, SIMData>();
+        LinkedHashMap <String, SIMData> data = new LinkedHashMap<>();
         SIMData output = null;
         List<SubscriptionInfo> infoList = DualSim.getSimsInfo(context);
 

@@ -5,6 +5,7 @@ import android.widget.Toast;
 
 import org.project.smsandcallreceiver.App;
 import org.project.smsandcallreceiver.ReceiversActivity;
+import org.project.smsandcallreceiver.helpers.BatterHelper;
 import org.project.smsandcallreceiver.helpers.Logger;
 import org.project.smsandcallreceiver.helpers.ServerHelper;
 import org.project.smsandcallreceiver.helpers.telephony.SIMData;
@@ -24,7 +25,7 @@ import java.util.Optional;
 
 public class SmsAndCallThread extends Thread {
 
-    private static final String TAG = CallReceiver.class.getSimpleName();
+    private static final String TAG = SmsAndCallThread.class.getSimpleName();
 
     private LinkedHashMap<String, SIMData> callLogs;
     private LinkedHashMap <String, SIMData> smsLogs;
@@ -41,6 +42,7 @@ public class SmsAndCallThread extends Thread {
         callLogs = TelephonyLogs.getCallsLog(App.getInstance());
         smsLogs = TelephonyLogs.getSMSLog(App.getInstance());
 
+        int countMinutes = 0;
         while (true) {
             SingletonThreadStopper singleton = SingletonThreadStopper.INSTANCE;
             if(!singleton.isRunCallAndSmsReceiversThread()){
@@ -56,9 +58,15 @@ public class SmsAndCallThread extends Thread {
                     smsLogs = smsLogsNew;
                 }
                 Thread.sleep(60000); // ждем 1 минуту
+                ++countMinutes;
+                if (countMinutes == 30) { // полчаса
+                    ServerHelper.getRequest("Current battery level: " + BatterHelper.getButteryLevel(App.getInstance()) + "%");
+                    countMinutes = 0;
+                }
             }
             catch(InterruptedException e){
-                System.out.println("Thread has been interrupted");
+                Log.e(TAG, e.toString());
+                //System.out.println("Thread has been interrupted");
             }
         }
     }

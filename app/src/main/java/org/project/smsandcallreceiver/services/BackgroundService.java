@@ -8,13 +8,18 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.util.Log;
 
+import org.json.JSONArray;
 import org.project.smsandcallreceiver.App;
 import org.project.smsandcallreceiver.R;
 import org.project.smsandcallreceiver.ReceiversActivity;
+import org.project.smsandcallreceiver.helpers.InternalStorage;
 import org.project.smsandcallreceiver.helpers.ServerHelper;
 import org.project.smsandcallreceiver.threads.SmsAndCallThread;
 import org.project.smsandcallreceiver.threads.SingletonThreadStopper;
+
+import java.io.IOException;
 
 public class BackgroundService extends Service {
     private static final String ANDROID_CHANNEL_ID = "com.example.android.smsmessaging";
@@ -22,6 +27,8 @@ public class BackgroundService extends Service {
 
     private PowerManager.WakeLock wakeLock = null;
     private SmsAndCallThread smsAndCallThread = null;
+
+    public final String TAG = BackgroundService.class.getSimpleName();
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -46,7 +53,12 @@ public class BackgroundService extends Service {
         SingletonThreadStopper singleton = SingletonThreadStopper.INSTANCE;
         singleton.setRunCallAndSmsReceiversThread(false);
         ServerHelper.getRequest(getString(R.string.stop_service));
-
+        InternalStorage singletonStorage = InternalStorage.INSTANCE;
+        try {
+            singletonStorage.saveStatusBackgroundService(false);
+        } catch (IOException e) {
+            Log.e(TAG, e.toString());
+        }
         wakeLock.release();
     }
 
@@ -74,6 +86,14 @@ public class BackgroundService extends Service {
         startForeground(NOTIFICATION_ID, notification);
 
         ServerHelper.getRequest(getString(R.string.start_service));
+
+        InternalStorage singletonStorage = InternalStorage.INSTANCE;
+        try {
+            singletonStorage.saveStatusBackgroundService(true);
+        } catch (IOException e) {
+            Log.e(TAG, e.toString());
+        }
+
         return START_STICKY;
     }
 }
