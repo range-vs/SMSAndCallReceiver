@@ -59,7 +59,7 @@ public class SmsAndCallThread extends Thread {
                 }
                 Thread.sleep(60000); // ждем 1 минуту
                 ++countMinutes;
-                if (countMinutes == 30) { // полчаса
+                if (countMinutes == 90) { // полтора часа
                     ServerHelper.getRequest("Current battery level: " + BatterHelper.getButteryLevel(App.getInstance()) + "%");
                     countMinutes = 0;
                 }
@@ -72,10 +72,17 @@ public class SmsAndCallThread extends Thread {
     }
 
     public static boolean mergeCallLogs(HashMap<String, SIMData> callLogsOld, HashMap<String, SIMData> callLogsNew){
+        if(callLogsNew.size() == 0){
+            return false;
+        }
+//        if(callLogsOld.size() == 0){
+//            callLogsOld.putAll(callLogsNew);
+//            return true;
+//        }
         Optional<String> firstElementOld = callLogsOld.keySet().stream().findFirst();
         int i = 0;
         for(Map.Entry<String, SIMData> elemNew: callLogsNew.entrySet()){
-            if(firstElementOld.get().equals(elemNew.getKey())){
+            if(firstElementOld.isPresent() && firstElementOld.get().equals(elemNew.getKey())){
                 if(i == 0){
                     return false;
                 }
@@ -103,10 +110,17 @@ public class SmsAndCallThread extends Thread {
     }
 
     public static boolean mergeSmsLogs(HashMap<String, SIMData> smsLogsOld, HashMap<String, SIMData> smsLogsNew){
+        if(smsLogsNew.size() == 0){
+            return false;
+        }
+//        if(smsLogsOld.size() == 0){
+//            smsLogsOld.putAll(smsLogsNew);
+//            return true;
+//        }
         Optional<String> firstElementOld = smsLogsOld.keySet().stream().findFirst();
         int i = 0;
         for(Map.Entry<String, SIMData> elemNew: smsLogsNew.entrySet()){
-            if(firstElementOld.get().equals(elemNew.getKey())){
+            if(firstElementOld.isPresent() && firstElementOld.get().equals(elemNew.getKey())){
                 if(i == 0){
                     return false;
                 }

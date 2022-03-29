@@ -29,8 +29,11 @@ public class TelephonyLogs {
         };
         int slot = -1;
         Cursor managedCursor =  App.getInstance().getContentResolver().query(CallLog.Calls.CONTENT_URI, projection, null, null, CallLog.Calls.DATE + " DESC limit " + countRecords + ";");
+        if(managedCursor.getCount() == 0){
+            return data;
+        }
         managedCursor.moveToFirst();
-        while (!managedCursor.isLast()) {
+        for (int i = 0; i < managedCursor.getCount(); i++) {
             String type = managedCursor.getString(0); // type
             String target = managedCursor.getString(1); // sim
             String number = managedCursor.getString(2); // number
@@ -39,7 +42,7 @@ public class TelephonyLogs {
             int dircode = Integer.parseInt(type);
             if(dircode == CallLog.Calls.INCOMING_TYPE || dircode == CallLog.Calls.MISSED_TYPE){
                 for(SubscriptionInfo infoSim: infoList){
-                    if(String.valueOf(infoSim.getSubscriptionId()).equals(target) || target.contains(String.valueOf(infoSim.getSubscriptionId()))){
+                    if(infoSim.getIccId().equals(target) || target.contains(infoSim.getIccId())){
                         slot = infoSim.getSimSlotIndex();
                         output = new SIMData(infoSim.getNumber(),
                                 DualSim.getOutput(App.getInstance(), "getSimOperatorName", slot),
@@ -70,8 +73,11 @@ public class TelephonyLogs {
         };
         int slot = -1;
         Cursor managedCursor = App.getInstance().getContentResolver().query(Telephony.Sms.CONTENT_URI, projection, null, null, Telephony.Sms.DATE + " DESC limit " + countRecords + ";");
+        if(managedCursor.getCount() == 0){
+            return data;
+        }
         managedCursor.moveToFirst();
-        while (!managedCursor.isLast()) {
+        for (int i = 0; i < managedCursor.getCount(); i++) {
             String type = managedCursor.getString(0); // type
             String target = managedCursor.getString(1); // sim
             String number = managedCursor.getString(2); // number
@@ -81,7 +87,7 @@ public class TelephonyLogs {
             int dircode = Integer.parseInt(type);
             if (dircode == Telephony.Sms.MESSAGE_TYPE_INBOX || dircode == CallLog.Calls.MISSED_TYPE) {
                 for (SubscriptionInfo infoSim : infoList) {
-                    if (String.valueOf(infoSim.getSubscriptionId()).equals(target) || target.contains(String.valueOf(infoSim.getSubscriptionId()))) {
+                    if(infoSim.getIccId().equals(target) || target.contains(infoSim.getIccId())){
                         slot = infoSim.getSimSlotIndex();
                         output = new SIMData(infoSim.getNumber(),
                                 DualSim.getOutput(App.getInstance(), "getSimOperatorName", slot),
