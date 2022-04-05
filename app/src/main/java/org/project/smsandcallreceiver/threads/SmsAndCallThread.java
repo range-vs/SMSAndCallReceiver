@@ -59,7 +59,7 @@ public class SmsAndCallThread extends Thread {
                 }
                 Thread.sleep(60000); // ждем 1 минуту
                 ++countMinutes;
-                if (countMinutes == 90) { // полтора часа
+                if (countMinutes == 240) { // четыре часа
                     ServerHelper.getRequest("Current battery level: " + BatterHelper.getButteryLevel(App.getInstance()) + "%");
                     countMinutes = 0;
                 }
