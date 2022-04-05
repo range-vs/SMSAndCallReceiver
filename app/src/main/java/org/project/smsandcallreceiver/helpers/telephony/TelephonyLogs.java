@@ -87,8 +87,7 @@ public class TelephonyLogs {
             int dircode = Integer.parseInt(type);
             if (dircode == Telephony.Sms.MESSAGE_TYPE_INBOX || dircode == CallLog.Calls.MISSED_TYPE) {
                 for (SubscriptionInfo infoSim : infoList) {
-                    if(infoSim.getIccId().equals(target) || target.contains(infoSim.getIccId())){
-                        slot = infoSim.getSimSlotIndex();
+                    if (String.valueOf(infoSim.getSubscriptionId()).equals(target) || target.contains(String.valueOf(infoSim.getSubscriptionId()))) {                        slot = infoSim.getSimSlotIndex();
                         output = new SIMData(infoSim.getNumber(),
                                 DualSim.getOutput(App.getInstance(), "getSimOperatorName", slot),
                                 number,
