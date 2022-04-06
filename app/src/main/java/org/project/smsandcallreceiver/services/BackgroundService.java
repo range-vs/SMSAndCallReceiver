@@ -6,9 +6,12 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
+
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 
 import org.json.JSONArray;
 import org.project.smsandcallreceiver.App;
@@ -16,6 +19,7 @@ import org.project.smsandcallreceiver.R;
 import org.project.smsandcallreceiver.ReceiversActivity;
 import org.project.smsandcallreceiver.helpers.InternalStorage;
 import org.project.smsandcallreceiver.helpers.ServerHelper;
+import org.project.smsandcallreceiver.receivers.BatteryLevelReceiver;
 import org.project.smsandcallreceiver.threads.SmsAndCallThread;
 import org.project.smsandcallreceiver.threads.SingletonThreadStopper;
 
@@ -50,6 +54,8 @@ public class BackgroundService extends Service {
     public void onDestroy() {
 //        SmsReceiver.disableBroadcastReceiver();
 //        CallReceiver.disableBroadcastReceiver();
+        BatteryLevelReceiver.disableBroadcastReceiver();
+
         SingletonThreadStopper singleton = SingletonThreadStopper.INSTANCE;
         singleton.setRunCallAndSmsReceiversThread(false);
         ServerHelper.getRequest(getString(R.string.stop_service));
@@ -66,6 +72,7 @@ public class BackgroundService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
 //        SmsReceiver.enableBroadcastReceiver();
 //        CallReceiver.enableBroadcastReceiver();
+        BatteryLevelReceiver.enableBroadcastReceiver();
 
         SingletonThreadStopper singleton = SingletonThreadStopper.INSTANCE;
         singleton.setRunCallAndSmsReceiversThread(true);

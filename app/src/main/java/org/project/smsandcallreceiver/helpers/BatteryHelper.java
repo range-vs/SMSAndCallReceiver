@@ -5,7 +5,7 @@ import android.os.BatteryManager;
 
 import static android.content.Context.BATTERY_SERVICE;
 
-public class BatterHelper {
+public class BatteryHelper {
 
     public static int getButteryLevel(Context context){
         BatteryManager bm = (BatteryManager) context.getSystemService(BATTERY_SERVICE);

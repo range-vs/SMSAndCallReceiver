@@ -44,6 +44,11 @@
 <!--                <action android:name="android.intent.action.PHONE_STATE"/>-->
 <!--            </intent-filter>-->
 <!--        </receiver>-->
+<!--        <receiver android:name=".receivers.BatteryLevelReceiver" android:exported="true">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.BATTERY_CHANGED"/>-->
+<!--            </intent-filter>-->
+<!--        </receiver>-->
         <service android:name=".services.BackgroundService" android:stopWithTask="false" android:enabled="true"
             android:exported="true"/>
         <receiver android:name=".services.BootBroadcast" android:enabled="true"

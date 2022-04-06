@@ -2,6 +2,7 @@ package org.project.smsandcallreceiver;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +15,7 @@ import org.json.JSONArray;
 import org.project.smsandcallreceiver.helpers.InternalStorage;
 import org.project.smsandcallreceiver.helpers.Logger;
 import org.project.smsandcallreceiver.helpers.ServerHelper;
+import org.project.smsandcallreceiver.receivers.BatteryLevelReceiver;
 import org.project.smsandcallreceiver.services.BackgroundService;
 import org.project.smsandcallreceiver.threads.InternetThread;
 import org.project.smsandcallreceiver.threads.SingletonThreadStopper;
@@ -40,6 +42,7 @@ public class ReceiversActivity extends AppCompatActivity {
 
         ServerHelper.init();
         checkForSmsPermission();
+
         Button btnStart = findViewById(R.id.btnStartService);
         btnStart.setOnClickListener(view -> {
             Logger.remove();

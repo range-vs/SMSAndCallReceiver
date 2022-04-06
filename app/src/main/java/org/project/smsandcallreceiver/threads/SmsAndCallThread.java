@@ -5,18 +5,13 @@ import android.widget.Toast;
 
 import org.project.smsandcallreceiver.App;
 import org.project.smsandcallreceiver.ReceiversActivity;
-import org.project.smsandcallreceiver.helpers.BatterHelper;
 import org.project.smsandcallreceiver.helpers.Logger;
 import org.project.smsandcallreceiver.helpers.ServerHelper;
 import org.project.smsandcallreceiver.helpers.telephony.SIMData;
 import org.project.smsandcallreceiver.helpers.telephony.TelephonyLogs;
-import org.project.smsandcallreceiver.receivers.CallReceiver;
-import org.project.smsandcallreceiver.threads.SingletonThreadStopper;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -42,7 +37,7 @@ public class SmsAndCallThread extends Thread {
         callLogs = TelephonyLogs.getCallsLog(App.getInstance());
         smsLogs = TelephonyLogs.getSMSLog(App.getInstance());
 
-        int countMinutes = 0;
+//        int countMinutes = 0;
         while (true) {
             SingletonThreadStopper singleton = SingletonThreadStopper.INSTANCE;
             if(!singleton.isRunCallAndSmsReceiversThread()){
@@ -58,11 +53,11 @@ public class SmsAndCallThread extends Thread {
                     smsLogs = smsLogsNew;
                 }
                 Thread.sleep(60000); // ждем 1 минуту
-                ++countMinutes;
-                if (countMinutes == 240) { // четыре часа
-                    ServerHelper.getRequest("Current battery level: " + BatterHelper.getButteryLevel(App.getInstance()) + "%");
-                    countMinutes = 0;
-                }
+//                ++countMinutes;
+//                if (countMinutes == 240) { // четыре часа
+//                    ServerHelper.getRequest("Current battery level: " + BatterHelper.getButteryLevel(App.getInstance()) + "%");
+//                    countMinutes = 0;
+//                }
             }
             catch(InterruptedException e){
                 Log.e(TAG, e.toString());
