@@ -19,7 +19,7 @@ public class BatteryLevelReceiver extends BroadcastReceiver {
     private int highTargetBatteryLevel = 80;
 
     private static BatteryLevelReceiver batteryLevelReceiver = null;
-    private int lastBatteryLevel = -1;
+    private static int lastBatteryLevel = -1;
     
     @Override
     public void onReceive(Context context, Intent intent) {
