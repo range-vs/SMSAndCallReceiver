@@ -61,9 +61,9 @@ public class ServerHelper {
 
         String finalText = text;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, response -> {
-            Log.e("ServerHelper", "REQUEST OK");
+            Log.e("ServerHelper", "REQUEST OK: " + response);
         }, error -> {
-            Log.e("ServerHelper", "REQUEST ERROR");
+            Log.e("ServerHelper", "REQUEST ERROR: " + error);
             try {
                 JSONArray json = singleton.readData();
                 json.put(finalText);
