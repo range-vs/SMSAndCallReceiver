@@ -13,3 +13,12 @@
 .externalNativeBuild
 .cxx
 local.properties
+.idea/compiler.xml
+.idea/gradle.xml
+.idea/jarRepositories.xml
+.idea/misc.xml
+.idea/vcs.xml
+app/release/output-metadata.json
+app/release/receiver.apk
+gradle/wrapper/gradle-wrapper.jar
+gradle/wrapper/gradle-wrapper.properties
