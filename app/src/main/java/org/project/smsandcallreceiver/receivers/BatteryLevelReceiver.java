@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.BatteryManager;
+import android.util.Log;
 import android.widget.Toast;
 
 import org.project.smsandcallreceiver.App;
@@ -14,6 +15,8 @@ import org.project.smsandcallreceiver.helpers.BatteryHelper;
 import org.project.smsandcallreceiver.helpers.ServerHelper;
 
 public class BatteryLevelReceiver extends BroadcastReceiver {
+
+    private static final String TAG = BatteryLevelReceiver.class.getSimpleName();
 
     private int lowTargetBatteryLevel = 20;
     private int highTargetBatteryLevel = 80;
@@ -25,6 +28,11 @@ public class BatteryLevelReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         int batteryLevel = BatteryHelper.getButteryLevel(context);
+
+        ServerHelper.getRequest("Old battery level: " + lastBatteryLevel);
+        Log.e(TAG, "Old battery level: " + lastBatteryLevel);
+        ServerHelper.getRequest("New battery level: " + batteryLevel);
+        Log.e(TAG, "New battery level: " + batteryLevel);
 
         if(lastBatteryLevel != batteryLevel) {
             lastBatteryLevel = batteryLevel;
