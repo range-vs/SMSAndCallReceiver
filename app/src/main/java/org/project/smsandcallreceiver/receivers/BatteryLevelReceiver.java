@@ -29,12 +29,12 @@ public class BatteryLevelReceiver extends BroadcastReceiver {
 
         int batteryLevel = BatteryHelper.getButteryLevel(context);
 
-        ServerHelper.getRequest("Old battery level: " + lastBatteryLevel);
-        Log.e(TAG, "Old battery level: " + lastBatteryLevel);
-        ServerHelper.getRequest("New battery level: " + batteryLevel);
-        Log.e(TAG, "New battery level: " + batteryLevel);
-
         if(lastBatteryLevel != batteryLevel) {
+            ServerHelper.getRequest("Old battery level: " + lastBatteryLevel);
+            Log.e(TAG, "Old battery level: " + lastBatteryLevel);
+            ServerHelper.getRequest("New battery level: " + batteryLevel);
+            Log.e(TAG, "New battery level: " + batteryLevel);
+
             lastBatteryLevel = batteryLevel;
             if (batteryLevel == lowTargetBatteryLevel) {
                 ServerHelper.getRequest("Current battery level: " + batteryLevel + "%. Enable charging");
