@@ -32,6 +32,8 @@ public class BackgroundService extends Service {
     private PowerManager.WakeLock wakeLock = null;
     private SmsAndCallThread smsAndCallThread = null;
 
+    public static boolean isWork = false;
+
     public final String TAG = BackgroundService.class.getSimpleName();
 
     @Override
@@ -66,6 +68,8 @@ public class BackgroundService extends Service {
             Log.e(TAG, e.toString());
         }
         wakeLock.release();
+
+        isWork = false;
     }
 
     @Override
@@ -100,6 +104,8 @@ public class BackgroundService extends Service {
         } catch (IOException e) {
             Log.e(TAG, e.toString());
         }
+
+        isWork = true;
 
         return START_STICKY;
     }

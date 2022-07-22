@@ -23,6 +23,12 @@ public class BatteryLevelReceiver extends BroadcastReceiver {
 
     private static BatteryLevelReceiver batteryLevelReceiver = null;
     private static int lastBatteryLevel = -1;
+
+    private enum StatusBattery {
+        ENABLE_CHARGING,
+        DISABLE_CHARGING
+    }
+    private static StatusBattery lastStatusBattery;
     
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -30,15 +36,18 @@ public class BatteryLevelReceiver extends BroadcastReceiver {
         int batteryLevel = BatteryHelper.getButteryLevel(context);
 
         if(lastBatteryLevel != batteryLevel) {
-            ServerHelper.getRequest("Old battery level: " + lastBatteryLevel);
-            Log.e(TAG, "Old battery level: " + lastBatteryLevel);
-            ServerHelper.getRequest("New battery level: " + batteryLevel);
-            Log.e(TAG, "New battery level: " + batteryLevel);
-
             lastBatteryLevel = batteryLevel;
             if (batteryLevel == lowTargetBatteryLevel) {
+                if(lastStatusBattery == StatusBattery.ENABLE_CHARGING){
+                    return;
+                }
+                lastStatusBattery = StatusBattery.ENABLE_CHARGING;
                 ServerHelper.getRequest("Current battery level: " + batteryLevel + "%. Enable charging");
             } else if (batteryLevel == highTargetBatteryLevel) {
+                if(lastStatusBattery == StatusBattery.DISABLE_CHARGING){
+                    return;
+                }
+                lastStatusBattery = StatusBattery.DISABLE_CHARGING;
                 ServerHelper.getRequest("Current battery level: " + batteryLevel + "%. Disable charging");
             } else if (batteryLevel % 10 == 0) {
                 ServerHelper.getRequest("Current battery level: " + batteryLevel + "%");

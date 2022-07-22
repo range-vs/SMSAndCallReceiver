@@ -35,6 +35,9 @@ public class ReceiversActivity extends AppCompatActivity {
     public static ReceiversActivity instance = null;
     private InternetThread internetThread = null;
 
+    private Button btnStart = null;
+    private Button btnStop = null;
+
     public void onCreate(Bundle savedInstanceState) {
         instance = this;
         super.onCreate(savedInstanceState);
@@ -43,7 +46,7 @@ public class ReceiversActivity extends AppCompatActivity {
         ServerHelper.init();
         checkForSmsPermission();
 
-        Button btnStart = findViewById(R.id.btnStartService);
+        btnStart = findViewById(R.id.btnStartService);
         btnStart.setOnClickListener(view -> {
             Logger.remove();
             SingletonThreadStopper singleton = SingletonThreadStopper.INSTANCE;
@@ -51,18 +54,30 @@ public class ReceiversActivity extends AppCompatActivity {
             internetThread = new InternetThread("thread_internet_connection");
             internetThread.start();
             startForegroundService(new Intent(this, BackgroundService.class));
+            btnStart.setEnabled(false);
+            btnStop.setEnabled(true);
         });
-        Button btnStop = findViewById(R.id.btnStopService);
+        btnStop = findViewById(R.id.btnStopService);
         btnStop.setOnClickListener(view -> {
             SingletonThreadStopper singleton = SingletonThreadStopper.INSTANCE;
             singleton.setRunInternetThread(false);
             stopService(new Intent(this, BackgroundService.class));
+            btnStart.setEnabled(true);
+            btnStop.setEnabled(false);
         });
         try {
             InternalStorage singleton = InternalStorage.INSTANCE;
             singleton.saveData(new JSONArray());
         } catch (IOException e) {
             Log.e(TAG, e.toString());
+        }
+
+        btnStart.setEnabled(false);
+        btnStop.setEnabled(false);
+        if(BackgroundService.isWork){
+            btnStop.setEnabled(true);
+        }else{
+            btnStart.setEnabled(true);
         }
     }
 
